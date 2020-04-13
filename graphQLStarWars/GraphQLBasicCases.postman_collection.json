@@ -1,0 +1,614 @@
+{
+	"info": {
+		"_postman_id": "4f6c6c81-1baa-4f47-8b9e-f0f2f6d876b7",
+		"name": "GraphQLBasicCases",
+		"description": "This is a basic collection of GraphQL scripts",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Basic Star Wars GraphQL Case",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "31f3b7cd-8af2-4643-a77d-8fc418f74832",
+						"exec": [
+							"pm.test(\"Get Basic GraphQL - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Get Basic GraphQL - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Get Basic GraphQL - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"",
+							"pm.test('Get Basic GraphQL - check there are 6 movies', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var filmDetails = foundjsonData.data.allFilms.films;",
+							"   var filmDetailsSize = filmDetails.length;",
+							"  pm.expect(filmDetailsSize).to.be.eql(6);",
+							"  console.log(\"Found at 6 movies\");",
+							"});",
+							"",
+							"pm.test('Get Basic GraphQL - check all movies episode id are numeric', function() {",
+							"   var foundjsonData = pm.response.json();",
+							"   var filmDetails = foundjsonData.data.allFilms.films;",
+							"  ",
+							"    for(var i=0;i<filmDetails.length;i++){",
+							"      var foundEpisodeId = filmDetails[i].episodeID;",
+							"      pm.expect(foundEpisodeId).to.be.a('number');",
+							"    }",
+							"});",
+							"",
+							"",
+							"pm.test('Get Basic GraphQL - check the required movie titles are present', function() {",
+							"",
+							"    var foundListofMovieTitles = []; ",
+							"    var foundjsonData = pm.response.json();",
+							"   var filmDetails = foundjsonData.data.allFilms.films;",
+							"  ",
+							"    for(var i=0;i<filmDetails.length;i++){",
+							"      var foundmovieTitle = filmDetails[i].title;",
+							"       foundListofMovieTitles.push(foundmovieTitle);",
+							"    }",
+							"",
+							"  requiredValues = [\"A New Hope\",\"The Empire Strikes Back\",\"Return of the Jedi\",\"The Phantom Menace\",\"Attack of the Clones\",\"Revenge of the Sith\"];",
+							"",
+							"  let intersection = requiredValues.filter(x => foundListofMovieTitles.includes(x));",
+							"  ",
+							"  pm.expect(intersection.length).to.be.eql(requiredValues.length);",
+							"});  "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/graphql",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "query{\r\n  allFilms\r\n  {\r\n   films {\r\n      id\r\n      title\r\n      episodeID\r\n    }\r\n  }\r\n}"
+				},
+				"url": {
+					"raw": "https://{{hostname}}",
+					"protocol": "https",
+					"host": [
+						"{{hostname}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic Star Wars GraphQL Case Vehicles with graphql",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "79ccb75a-5220-4a8c-aec3-ecf746a2f2a7",
+						"exec": [
+							"pm.test(\"Get Vehicles GraphQL - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Get Vehicles GraphQL - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Get Vehicles GraphQL - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"",
+							"pm.test('Get Vehicles GraphQL - check there are more than 10 Vehicles', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var vehiclesDetails = foundjsonData.data.allVehicles.vehicles;",
+							"   var vehiclesDetailsSize = vehiclesDetails.length;",
+							"  pm.expect(vehiclesDetailsSize).to.be.above(10);",
+							"  console.log(\"Found at least 10 vehicles\");",
+							"});",
+							"",
+							"pm.test('Get Vehicles GraphQL - check all Vehicles Cost are numeric', function() {",
+							"   var foundjsonData = pm.response.json();",
+							"   var vehiclesDetails = foundjsonData.data.allVehicles.vehicles;",
+							"  ",
+							"   console.log(vehiclesDetails);",
+							"  ",
+							"    for(var i=0;i<vehiclesDetails.length;i++){",
+							"      var vehiclesDetailsCost=vehiclesDetails[i].costInCredits;",
+							"      console.log(\"vehiclesDetailsCost\" + vehiclesDetailsCost);",
+							"      if (vehiclesDetailsCost !== null){",
+							"      pm.expect(vehiclesDetailsCost).to.be.a('number');",
+							"      }",
+							"    }",
+							"});",
+							"",
+							"",
+							"pm.test('Get Vehicles GraphQL - check the required Vehicles are present', function() {",
+							"",
+							"    var foundListofVehicleModels = []; ",
+							"    var foundjsonData = pm.response.json();",
+							"     var vehiclesDetails = foundjsonData.data.allVehicles.vehicles;",
+							"  ",
+							"    for(var i=0;i<vehiclesDetails.length;i++){",
+							"      var foundVehicleModel = vehiclesDetails[i].model;",
+							"       foundListofVehicleModels.push(foundVehicleModel);",
+							"    }",
+							"",
+							"  requiredValues = [\"Digger Crawler\",\"T-16 skyhopper\",\"X-34 landspeeder\"];",
+							"",
+							"  let intersection = requiredValues.filter(x => foundListofVehicleModels.includes(x));",
+							"  ",
+							"  pm.expect(intersection.length).to.be.eql(requiredValues.length);",
+							"});  "
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/graphql",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "query { allVehicles { vehicles { name model vehicleClass manufacturers costInCredits length crew  passengers  cargoCapacity  consumables created } } }"
+				},
+				"url": {
+					"raw": "https://{{hostname}}",
+					"protocol": "https",
+					"host": [
+						"{{hostname}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic Star Wars GraphQL Case Starships with graphql",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e76b256e-6a52-4813-8a10-5ac613420ea0",
+						"exec": [
+							"pm.test(\"Get Starships GraphQL - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Get Starships GraphQL - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Get Starships GraphQL - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"",
+							"pm.test('Get Starships GraphQL - check there are more than 10 Starships', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var starshipDetails = foundjsonData.data.allStarships.starships;",
+							"   var starshipDetailsSize = starshipDetails.length;",
+							"  pm.expect(starshipDetailsSize).to.be.above(10);",
+							"  console.log(\"Found at least 10 starships\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/graphql",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "query { allStarships { starships { name model starshipClass costInCredits length crew maxAtmospheringSpeed hyperdriveRating MGLT cargoCapacity consumables } } }"
+				},
+				"url": {
+					"raw": "https://{{hostname}}",
+					"protocol": "https",
+					"host": [
+						"{{hostname}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic Star Wars GraphQL Films Case with JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "53832725-d83c-424a-9116-46fcf5890fa0",
+						"exec": [
+							"pm.test(\"Get Films GraphQL with JSON query - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Get Films GraphQL  with JSON query - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Get Films GraphQL with JSON query - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"",
+							"pm.test('Get Films GraphQL with JSON query - check there are more than 5 Films', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var filmDetails = foundjsonData.data.allFilms.films;",
+							"   var filmDetailsSize = filmDetails.length;",
+							"  pm.expect(filmDetailsSize).to.be.above(5);",
+							"  console.log(\"Found at least 5 Films\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"query\" : \"query { allFilms { films { id title episodeID openingCrawl producers} } }\"\r\n}"
+				},
+				"url": {
+					"raw": "https://{{hostname}}",
+					"protocol": "https",
+					"host": [
+						"{{hostname}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic Star Wars GraphQL Case Starships with JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c2803aca-2462-4d11-89cb-10e701672ec8",
+						"exec": [
+							"pm.test(\"Get Starships GraphQL with JSON query - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Get Starships GraphQL  with JSON query - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Get Starships GraphQL with JSON query - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"",
+							"pm.test('Get Starships GraphQL with JSON query - check there are more than 10 Starships', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var starshipsDetails = foundjsonData.data.allStarships.starships;",
+							"   var starshipsDetailsSize = starshipsDetails.length;",
+							"  pm.expect(starshipsDetailsSize).to.be.above(10);",
+							"  console.log(\"Found at least 10 Starships\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"query\" : \"query { allStarships { starships { name model starshipClass costInCredits length crew maxAtmospheringSpeed hyperdriveRating MGLT cargoCapacity consumables } } }\"\r\n}"
+				},
+				"url": {
+					"raw": "https://{{hostname}}",
+					"protocol": "https",
+					"host": [
+						"{{hostname}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic Star Wars GraphQL Case Planets with JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9d189bf2-475b-4615-9dac-e250d5c82bae",
+						"exec": [
+							"pm.test(\"Get Planets GraphQL with JSON query - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Get Planets GraphQL  with JSON query - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Get Planets GraphQL with JSON query - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"",
+							"pm.test('Get Planets GraphQL with JSON query - check there are more than 10 Planets', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var planetsDetails = foundjsonData.data.allPlanets.planets;",
+							"   var planetsDetailsSize = planetsDetails.length;",
+							"  pm.expect(planetsDetailsSize).to.be.above(10);",
+							"  console.log(\"Found at least 10 Planets\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"query\" : \"query { allPlanets { planets { name diameter rotationPeriod gravity population climates terrains surfaceWater created} } }\"\r\n}"
+				},
+				"url": {
+					"raw": "https://{{hostname}}",
+					"protocol": "https",
+					"host": [
+						"{{hostname}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic Star Wars GraphQL Case Species with JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6a8d20af-cb97-49b2-92c1-3d6bcd0196fa",
+						"exec": [
+							"pm.test(\"Get species GraphQL with JSON query - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Get species GraphQL  with JSON query - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Get species GraphQL with JSON query - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"",
+							"pm.test('Get species GraphQL with JSON query - check there are more than 10 species', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var speciesDetails = foundjsonData.data.allSpecies.species;",
+							"   var speciesDetailsSize = speciesDetails.length;",
+							"  pm.expect(speciesDetailsSize).to.be.above(10);",
+							"  console.log(\"Found at least 10 species\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"query\" : \"query { allSpecies { species { name classification designation averageHeight averageLifespan eyeColors hairColors skinColors } } }\"\r\n}"
+				},
+				"url": {
+					"raw": "https://{{hostname}}",
+					"protocol": "https",
+					"host": [
+						"{{hostname}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Basic Star Wars GraphQL Case Vehicles with JSON",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a70acc5c-5a7d-48b2-a2be-63d5e855334b",
+						"exec": [
+							"pm.test(\"Get Vehicles GraphQL with JSON query - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Get Vehicles GraphQL  with JSON query - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Get Vehicles GraphQL with JSON query - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"",
+							"pm.test('Get Vehicles GraphQL with JSON query - check there are more than 10 vehicles', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var vehiclesDetails = foundjsonData.data.allVehicles.vehicles;",
+							"   var vehiclesDetailsSize = vehiclesDetails.length;",
+							"  pm.expect(vehiclesDetailsSize).to.be.above(10);",
+							"  console.log(\"Found at least 10 vehicles\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "  {\r\n    \"query\" : \"query { allVehicles { vehicles { name model vehicleClass manufacturers costInCredits length crew  passengers  cargoCapacity  consumables created } } }\"\r\n}"
+				},
+				"url": {
+					"raw": "https://{{hostname}}",
+					"protocol": "https",
+					"host": [
+						"{{hostname}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "da69434c-d87a-4f74-8c4d-d792a6188aa9",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "df1956d2-6958-4a88-9cbf-afb4a4fbbd79",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d18d142b-0510-4796-98ff-b238cea8ce89",
+			"key": "artist",
+			"value": "Pink Floyd",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

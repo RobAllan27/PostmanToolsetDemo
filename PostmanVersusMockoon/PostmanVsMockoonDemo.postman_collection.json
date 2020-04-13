@@ -1,0 +1,190 @@
+{
+	"info": {
+		"_postman_id": "c8935986-76a8-499a-90b5-fea2eb2128c3",
+		"name": "PostmanVsMockoonDemo",
+		"description": "This is a basic set of tests, along with an environment that can be used to test some basic interfaces -  using REST and JSON. ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Demo GET to BookStore  -  check Greeting",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5b239afa-6087-4d70-92e1-5cae15f7f983",
+						"exec": [
+							"pm.test(\"Get to Books and Bikes Greeting - Greeting Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Get to Books and Bikes Greeting  - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test(\"Get to Books and Bikes Greeting - Good Morning in Greeting\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Good Morning Sir\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{passwordfordemo}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{usernamefordemo}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://{{host}}:{{port}}/greeting",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"greeting"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Demo GET to BookStore for Set of Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5b239afa-6087-4d70-92e1-5cae15f7f983",
+						"exec": [
+							"pm.test(\"Get List of Books and Bikes - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Get List of Books and Bikes - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"",
+							"pm.test('Get set of bikes and books - check there are at least 2 of each', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  var storeDetails = foundjsonData.store;",
+							"  var bikelist = storeDetails.bicycle;",
+							"  var booklist = storeDetails.book;",
+							"   var storeBikeListSize = bikelist.length;",
+							"   var storeBookListSize = booklist.length;",
+							"  pm.expect(storeBikeListSize).is.above(1);",
+							"  console.log(\"Found at least 2 Bikes\");",
+							"   pm.expect(storeBookListSize).is.above(1);",
+							"    console.log(\"Found at least 2 Books\")",
+							"});",
+							"",
+							"pm.test('Get Book catagories - check the required book reference types are present', function() {",
+							"     var foundjsonData = pm.response.json();",
+							"  var storeDetails = foundjsonData.store;",
+							"    ",
+							"  var booklist = storeDetails.book;",
+							"  ",
+							"     var foundValues = []; ",
+							"  ",
+							"    for(var i=0;i<booklist.length;i++){",
+							"      var foundNameValue = booklist[i].category;",
+							"      foundValues.push(foundNameValue);",
+							"    }",
+							"",
+							" requiredValues = [\"reference\",\"fiction\"];",
+							"  //requiredValues = [\"Giant\",\"Marin\",\"Trek\"];",
+							"",
+							"  let intersection = requiredValues.filter(x => foundValues.includes(x));",
+							"  ",
+							"  pm.expect(intersection.length).to.be.eql(requiredValues.length);",
+							"  ",
+							"});",
+							"",
+							"",
+							"pm.test('Get Book catagories - check the required bike brands are present', function() {",
+							"     var foundjsonData = pm.response.json();",
+							"  var storeDetails = foundjsonData.store;",
+							"    ",
+							"  var bikelist = storeDetails.bicycle;",
+							"  ",
+							"     var foundValues = []; ",
+							"  ",
+							"    for(var i=0;i<bikelist.length;i++){",
+							"      var foundNameValue = bikelist[i].brand;",
+							"      foundValues.push(foundNameValue);",
+							"    }",
+							"",
+							"  requiredValues = [\"Giant\",\"Marin\",\"Trek\"];",
+							"",
+							"  let intersection = requiredValues.filter(x => foundValues.includes(x));",
+							"  ",
+							"  pm.expect(intersection.length).to.be.eql(requiredValues.length);",
+							"  ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{passwordfordemo}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{usernamefordemo}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "http://{{host}}:{{port}}/booksandbikesstore",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"booksandbikesstore"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

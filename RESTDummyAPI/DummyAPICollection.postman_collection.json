@@ -1,0 +1,353 @@
+{
+	"info": {
+		"_postman_id": "ed605012-4d34-4248-8047-9ec632a06a9e",
+		"name": "DummyAPICollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create to Dummy API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "40d824fa-f1e9-4188-a712-0bc1111ea4cb",
+						"exec": [
+							"pm.test(\"Call Create employee on dummyAPI - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Call Create employee on dummyAPI - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Call Create employee on dummyAPI - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  console.log(foundjsonData);",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"/* Expected body contents of the response",
+							"{",
+							"    \"status\": \"success\",",
+							"    \"data\": {",
+							"        \"name\": \"test\",",
+							"        \"salary\": \"123\",",
+							"        \"age\": \"23\",",
+							"        \"id\": 25",
+							"    }",
+							"}",
+							"*/",
+							"",
+							"pm.test(\"Call Create employee on dummyAPI - Check that name, salary and age are not numbers - i.e. strings \", function () {",
+							"    var foundjsonData = pm.response.json();",
+							"    pm.expect(foundjsonData.data.name).to.not.be.a('number');",
+							"    pm.expect(foundjsonData.data.salary).to.not.be.a('number');",
+							"    pm.expect(foundjsonData.data.age).to.not.be.a('number');",
+							"});",
+							"",
+							"pm.test('Call Create employee on dummyAPI - Test value of the created ID is numeric between 0 and 10000000', function() {",
+							"",
+							"  var foundjsonData = pm.response.json();",
+							"  var id = foundjsonData.data.id;  ",
+							"  pm.expect(id).is.above(0);",
+							"  pm.expect(id).is.below(10000000);",
+							"  console.log(\"Id value from JSON \" + id);",
+							"  pm.collectionVariables.set(\"userIdForTests\", id);",
+							"});",
+							"",
+							"// to log a value to the console",
+							"console.log(\"Id value \" + pm.collectionVariables.get(\"userIdForTests\"));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"ignatis\",\"salary\":\"123\",\"age\":\"23\"}"
+				},
+				"url": {
+					"raw": "http://{{hostname}}/api/v1/create",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"create"
+					]
+				},
+				"description": "http://dummy.restapiexample.com/api/v1/create"
+			},
+			"response": []
+		},
+		{
+			"name": "Get to Dummy API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "47adc665-1b54-4774-89c5-d10c5796f224",
+						"exec": [
+							"/* Expected body contents of the response",
+							"{",
+							"\"status\": \"success\",",
+							"\"data\": {",
+							"\"id\": \"1\",",
+							"\"employee_name\": \"Tiger Nixon\",",
+							"\"employee_salary\": \"320800\",",
+							"\"employee_age\": \"61\",",
+							"\"profile_image\": \"\"",
+							"}",
+							"}",
+							"*/",
+							"",
+							"pm.test(\"Call Get employee on dummyAPI - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Call Get employee on dummyAPI - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Call Get employee on dummyAPI - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  console.log(foundjsonData);",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"pm.test(\"Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Call Get employee on dummyAPI - Check Id is equal to value sent in \", function () {",
+							"    var foundjsonData = pm.response.json();",
+							"    pm.expect(foundjsonData.data.id).to.be.eql(pm.globals.get(\"createdUserId\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}/api/v1/employee/{{userIdForTests}}",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"employee",
+						"{{userIdForTests}}"
+					]
+				},
+				"description": "Get to Dummy API\n\nhttp://dummy.restapiexample.com/api/v1/employee/155709"
+			},
+			"response": []
+		},
+		{
+			"name": "Update to Dummy API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1d501039-7fb0-4cb9-af75-704797de4d70",
+						"exec": [
+							"/*  Expected body contents of the response",
+							"",
+							"{",
+							"    \"status\": \"success\",",
+							"    \"data\": {",
+							"        \"name\": \"test\",",
+							"        \"salary\": \"1243\",",
+							"        \"age\": \"23\",",
+							"        \"id\": \"25\"",
+							"    }",
+							"}",
+							"",
+							"*/",
+							"",
+							"pm.test(\"Call Update employee on dummyAPI - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Call Update employee on dummyAPI - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Call Update employee on dummyAPI - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  console.log(foundjsonData);",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"pm.test(\"Call Update employee on dummyAPI - Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Call Update employee on dummyAPI - Check Id is equal to value sent in \", function () {",
+							"    var foundjsonData = pm.response.json();",
+							"    pm.expect(foundjsonData.data.id).to.be.eql(pm.globals.get(\"createdUserId\"));",
+							"});",
+							"",
+							"pm.test(\"Call Update employee on dummyAPI - Check Salary is 55555 \", function () {",
+							"    var foundjsonData = pm.response.json();",
+							"    pm.expect(foundjsonData.data.salary).to.be.eql('55555');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"Mr Ignatis\",\"salary\":\"55555\",\"age\":\"25\"}"
+				},
+				"url": {
+					"raw": "http://{{hostname}}/api/v1/update/{{userIdForTests}}",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"update",
+						"{{userIdForTests}}"
+					]
+				},
+				"description": "Get to Dummy API\n\n\thttp://dummy.restapiexample.com/api/v1/update/155579"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete to Dummy API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9cd48c09-5c90-48f0-9075-fe9dde64367b",
+						"exec": [
+							"/*  Expected body contents of the response",
+							"{",
+							"    \"status\": \"success\",",
+							"    \"message\": \"successfully! deleted Records\"",
+							"}",
+							"",
+							"*/",
+							"",
+							"pm.test(\"Call Delete employee on dummyAPI - Status code is 200\", function () {",
+							"    //var foundjsonData = pm.response.json();",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Call Delete employee on dummyAPI - Response time is less than 2000ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+							"});",
+							"",
+							"pm.test('Call Delete employee on dummyAPI - Expect at least 1 Json Object in return body', function() {",
+							"  var foundjsonData = pm.response.json();",
+							"  console.log(foundjsonData);",
+							"  var lengthOfJson = Object.keys(foundjsonData).length;",
+							"  console.log(lengthOfJson);",
+							"  pm.expect(lengthOfJson).is.above(0);",
+							"});",
+							"",
+							"pm.test(\"Call Delete employee on dummyAPI - Content-Type is present\", function () {",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"pm.test(\"Call Delete employee on dummyAPI - Check status and message tags \", function () {",
+							"    var foundjsonData = pm.response.json();",
+							"    pm.expect(foundjsonData.status).to.be.eql('status');",
+							"    pm.expect(foundjsonData.message).to.be.eql('successfully! deleted Records');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://d{{hostname}}/api/v1/delete/{{userIdForTests}}",
+					"protocol": "http",
+					"host": [
+						"d{{hostname}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"delete",
+						"{{userIdForTests}}"
+					]
+				},
+				"description": "Delete to Dummy API\n\nhttp://dummy.restapiexample.com/api/v1/delete/155579"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1046e4c5-97df-4395-9b0b-457a442c0010",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "5df77a93-b041-49c2-b60b-212702f64d4b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "79faff9c-e063-4701-a3c4-cde3fc2e9923",
+			"key": "userIdForTests",
+			"value": "8",
+			"type": "string"
+		}
+	]
+}
